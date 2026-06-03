@@ -3,747 +3,774 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>UzGenie — Ko'rsatma</title>
+  <title>UzGenie</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg:      var(--tg-theme-bg-color,            #17212b);
-      --bg2:     var(--tg-theme-secondary-bg-color,  #232e3c);
-      --text:    var(--tg-theme-text-color,           #f5f5f5);
-      --hint:    var(--tg-theme-hint-color,           #708499);
-      --btn:     var(--tg-theme-button-color,         #2ca5e0);
-      --btn-txt: var(--tg-theme-button-text-color,    #ffffff);
-      --link:    var(--tg-theme-link-color,           #2ca5e0);
-      --radius:  12px;
+      --bg:      #0d1117;
+      --bg2:     #161b22;
+      --bg3:     #1c2333;
+      --border:  rgba(255,255,255,.07);
+      --text:    #e6edf3;
+      --muted:   #8b949e;
+      --accent:  #2ca5e0;
+      --accent2: #58a6ff;
+      --green:   #3fb950;
+      --orange:  #d29922;
+      --purple:  #bc8cff;
+      --radius:  14px;
+      --nav-h:   64px;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    html, body {
       background: var(--bg);
       color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
       min-height: 100vh;
-      font-size: 15px;
+      overscroll-behavior: none;
     }
 
+    /* ── SCROLLBAR ───────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 4px; }
+
     /* ── HEADER ─────────────────────────────────────────────── */
-    .header {
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(13,17,23,.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 16px;
-      background: var(--bg2);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 0 16px;
+      height: 54px;
     }
-    .logo { font-size: 17px; font-weight: 700; letter-spacing: -.3px; }
-    .logo span { color: var(--btn); }
+    .logo-wrap { display: flex; align-items: center; gap: 8px; }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #2ca5e0, #58a6ff);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+    }
+    .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -.4px; }
+    .logo-text span { color: var(--accent); }
 
-    .lang-row { display: flex; gap: 4px; }
-    .lang-btn {
-      padding: 5px 11px;
-      border-radius: 20px;
-      border: 1.5px solid transparent;
+    .lang-pills { display: flex; gap: 2px; background: var(--bg3); padding: 3px; border-radius: 10px; }
+    .lang-pill {
+      padding: 4px 10px;
+      border-radius: 7px;
+      border: none;
       background: transparent;
-      color: var(--hint);
-      font-size: 13px;
+      color: var(--muted);
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: all .18s;
     }
-    .lang-btn.active {
-      background: var(--btn);
-      color: var(--btn-txt);
-    }
+    .lang-pill.active { background: var(--accent); color: #fff; }
 
-    /* ── TABS ────────────────────────────────────────────────── */
-    .tabs-wrap {
-      background: var(--bg2);
-      border-bottom: 1px solid rgba(255,255,255,.06);
+    /* ── HERO ───────────────────────────────────────────────── */
+    .hero {
+      margin: 14px 14px 0;
+      padding: 20px 18px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #0d2137 0%, #0f1923 50%, #1a1040 100%);
+      border: 1px solid rgba(44,165,224,.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(44,165,224,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; left: -30px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(188,140,255,.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -.4px;
+      margin-bottom: 6px;
+    }
+    .hero-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .hero-badges { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+    .hbadge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid;
+    }
+    .hb-blue  { background: rgba(44,165,224,.12);  border-color: rgba(44,165,224,.3);  color: #7dd3f7; }
+    .hb-green { background: rgba(63,185,80,.12);   border-color: rgba(63,185,80,.3);   color: #7ee787; }
+    .hb-purp  { background: rgba(188,140,255,.12); border-color: rgba(188,140,255,.3); color: #d2a8ff; }
+
+    /* ── TABS (horizontal scroll) ───────────────────────────── */
+    .tabs-outer {
+      position: sticky;
+      top: 54px;
+      z-index: 40;
+      background: rgba(13,17,23,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
     .tabs {
       display: flex;
       overflow-x: auto;
-      gap: 4px;
-      padding: 10px 12px;
       scrollbar-width: none;
+      gap: 0;
+      padding: 0 12px;
     }
     .tabs::-webkit-scrollbar { display: none; }
-    .tab-btn {
-      white-space: nowrap;
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1.5px solid rgba(255,255,255,.12);
-      background: transparent;
-      color: var(--text);
+    .tab {
+      flex-shrink: 0;
+      padding: 12px 14px;
       font-size: 13px;
       font-weight: 500;
+      color: var(--muted);
+      border: none;
+      background: transparent;
       cursor: pointer;
-      transition: all .18s;
+      position: relative;
+      transition: color .18s;
+      white-space: nowrap;
+    }
+    .tab.active { color: var(--text); }
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 12px; right: 12px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* ── MAIN ───────────────────────────────────────────────── */
+    .main { padding: 14px 14px 24px; }
+    .section { display: none; animation: fadeUp .2s ease; }
+    .section.active { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SECTION TITLE ──────────────────────────────────────── */
+    .sec-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .sec-icon {
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
       flex-shrink: 0;
     }
-    .tab-btn.active {
-      background: var(--btn);
-      border-color: var(--btn);
-      color: var(--btn-txt);
-    }
+    .ic-blue   { background: linear-gradient(135deg, rgba(44,165,224,.25), rgba(88,166,255,.15)); }
+    .ic-pink   { background: linear-gradient(135deg, rgba(255,100,130,.25), rgba(255,150,100,.15)); }
+    .ic-teal   { background: linear-gradient(135deg, rgba(50,200,180,.25), rgba(30,160,200,.15)); }
+    .ic-green  { background: linear-gradient(135deg, rgba(63,185,80,.25),  rgba(40,220,100,.15)); }
+    .ic-orange { background: linear-gradient(135deg, rgba(210,153,34,.25), rgba(255,180,50,.15)); }
+    .ic-purp   { background: linear-gradient(135deg, rgba(188,140,255,.25),rgba(100,120,255,.15)); }
 
-    /* ── CONTENT ─────────────────────────────────────────────── */
-    .content {
-      padding: 14px 14px 32px;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-    .section { display: none; }
-    .section.active { display: block; }
+    .sec-title { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
 
-    .section-title {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 14px;
-      margin-top: 4px;
-    }
-
-    /* ── CARD ────────────────────────────────────────────────── */
+    /* ── CARD ───────────────────────────────────────────────── */
     .card {
       background: var(--bg2);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 14px 16px;
       margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
     }
+    .card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 3px 0 0 3px;
+    }
+    .card.c-green::before  { background: var(--green); }
+    .card.c-orange::before { background: var(--orange); }
+    .card.c-purple::before { background: var(--purple); }
+    .card.c-none::before   { display: none; }
+
     .card-label {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      color: var(--btn);
+      letter-spacing: .8px;
       text-transform: uppercase;
-      letter-spacing: .7px;
-      margin-bottom: 8px;
+      color: var(--accent);
+      margin-bottom: 10px;
     }
-    .card p {
-      line-height: 1.55;
-      color: var(--text);
-    }
-    .card ul { list-style: none; padding: 0; }
+    .card.c-green  .card-label { color: var(--green); }
+    .card.c-orange .card-label { color: var(--orange); }
+    .card.c-purple .card-label { color: var(--purple); }
+
+    .card p { font-size: 14px; line-height: 1.6; color: var(--muted); }
+    .card p b { color: var(--text); font-weight: 600; }
+
+    /* ── LIST ───────────────────────────────────────────────── */
+    .card ul { list-style: none; }
     .card ul li {
-      line-height: 1.55;
-      padding: 2px 0 2px 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+      padding: 3px 0 3px 18px;
       position: relative;
     }
     .card ul li::before {
-      content: "•";
+      content: '';
       position: absolute;
-      left: 2px;
-      color: var(--btn);
-      font-size: 13px;
-    }
-
-    /* ── BADGES ─────────────────────────────────────────────── */
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      vertical-align: middle;
-      margin-left: 4px;
-    }
-    .free  { background: rgba(52,199,89,.18);  color: #34c759; }
-    .limit { background: rgba(255,159,10,.18); color: #ff9f0a; }
-
-    /* ── STEP BLOCK ─────────────────────────────────────────── */
-    .steps { counter-reset: step; }
-    .step {
-      display: flex;
-      gap: 12px;
-      padding: 6px 0;
-      counter-increment: step;
-    }
-    .step-num {
-      flex-shrink: 0;
-      width: 24px;
-      height: 24px;
+      left: 4px; top: 11px;
+      width: 5px; height: 5px;
       border-radius: 50%;
-      background: var(--btn);
-      color: var(--btn-txt);
+      background: var(--accent);
+    }
+    .card.c-green  ul li::before { background: var(--green); }
+    .card.c-orange ul li::before { background: var(--orange); }
+
+    /* ── STEPS ──────────────────────────────────────────────── */
+    .steps { display: flex; flex-direction: column; gap: 10px; }
+    .step  { display: flex; gap: 12px; align-items: flex-start; }
+    .step-n {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
       font-size: 12px;
       font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-t { font-size: 14px; line-height: 1.6; color: var(--muted); padding-top: 2px; }
+
+    /* ── MODEL CARDS ────────────────────────────────────────── */
+    .models { display: flex; flex-direction: column; gap: 0; }
+    .model {
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin-top: 1px;
-    }
-    .step-text { line-height: 1.5; color: var(--text); }
-
-    /* ── MODEL CARD ─────────────────────────────────────────── */
-    .model-card {
-      display: flex;
-      align-items: flex-start;
       gap: 12px;
       padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid var(--border);
     }
-    .model-card:last-child { border-bottom: none; padding-bottom: 0; }
-    .model-icon {
-      font-size: 22px;
+    .model:last-child { border-bottom: none; padding-bottom: 0; }
+    .model-ico {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
       flex-shrink: 0;
-      width: 36px;
-      text-align: center;
+      background: var(--bg3);
     }
-    .model-name { font-weight: 600; font-size: 15px; }
-    .model-desc { color: var(--hint); font-size: 13px; margin-top: 2px; line-height: 1.4; }
+    .model-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .model-desc { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+
+    /* ── DIVIDER ────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    /* ── INFO ROW ───────────────────────────────────────────── */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-key { color: var(--muted); }
+    .info-val { font-weight: 600; color: var(--text); }
+    .badge-free   { color: var(--green);  font-size: 12px; }
+    .badge-limit  { color: var(--orange); font-size: 12px; }
   </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo">Uz<span>Genie</span></div>
-  <div class="lang-row">
-    <button class="lang-btn" onclick="setLang('uz')">UZ</button>
-    <button class="lang-btn" onclick="setLang('ru')">RU</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo-wrap">
+    <div class="logo-icon">🤖</div>
+    <div class="logo-text">Uz<span>Genie</span></div>
+  </div>
+  <div class="lang-pills">
+    <button class="lang-pill" onclick="setLang('uz')">UZ</button>
+    <button class="lang-pill" onclick="setLang('ru')">RU</button>
+    <button class="lang-pill" onclick="setLang('en')">EN</button>
   </div>
 </div>
 
-<div class="tabs-wrap">
+<!-- TABS -->
+<div class="tabs-outer">
   <div class="tabs" id="tabs"></div>
 </div>
 
-<div class="content" id="content"></div>
+<!-- MAIN -->
+<div class="main" id="main"></div>
 
 <script>
-/* ── Telegram Web App init ───────────────────────────────────── */
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
 
-/* ── Til aniqlash ────────────────────────────────────────────── */
-const urlLang  = new URLSearchParams(location.search).get('lang');
-const tgLang   = tg?.initDataUnsafe?.user?.language_code;
+const urlLang = new URLSearchParams(location.search).get('lang');
+const tgLang  = tg?.initDataUnsafe?.user?.language_code;
 let lang = urlLang || (tgLang === 'ru' ? 'ru' : 'uz');
-let activeTab  = 0;
+let tab  = 0;
 
-/* ── Barcha kontent ──────────────────────────────────────────── */
-const DATA = {
-  uz: [
-    {
-      icon: '🤖', key: 'ai_chat', title: 'AI Chat',
-      cards: [
-        {
-          label: 'Modellar',
-          models: [
-            { icon: '⚡', name: 'Groq Llama 3.3 70B', desc: 'Eng tez javob. Avto rejimda birinchi ishlatiladi.' },
-            { icon: '🔵', name: 'Gemini 2.5 Flash',   desc: 'Google AI. Rasmlarni ham tahlil qila oladi.' },
-            { icon: '🟠', name: 'GPT-OSS 120B',       desc: 'OpenAI ochiq modeli. Zaxira sifatida ishlatiladi.' },
-            { icon: '🤖', name: 'Avto',               desc: 'Bot o\'zi eng yaxshisini tanlaydi. Tavsiya etiladi.' },
+/* ── DATA ─────────────────────────────────────────────────────── */
+const D = {
+uz: {
+  hero: {
+    title: '📚 Ko\'rsatma',
+    sub:   'UzGenie — bepul AI yordamchi. Barcha xususiyatlar haqida batafsil.',
+    badges: ['Bepul', 'AI Chat', '20 til TTS']
+  },
+  tabs: ['🤖 AI Chat', '🎨 Rasm', '🔊 Ovoz', '🌐 Tarjima', '⬇️ Video', '❓ FAQ'],
+  sections: [
+    { icon:'🤖', ic:'ic-blue', title:'AI Chat',
+      cards:[
+        { label:'Modellar', color:'',
+          models:[
+            {ico:'⚡', name:'Groq Llama 3.3 70B', desc:'Eng tez javob. Avto rejimda birinchi ishlatiladi.'},
+            {ico:'🔵', name:'Gemini 2.5 Flash',   desc:'Google AI. Rasmlarni ham tahlil qiladi.'},
+            {ico:'🟠', name:'GPT-OSS 120B',       desc:'OpenAI ochiq modeli. Zaxira sifatida.'},
+            {ico:'🤖', name:'Avto rejim',         desc:'Bot o\'zi eng yaxshisini tanlaydi. Tavsiya etiladi.'},
           ]
         },
-        {
-          label: 'Qanday ishlatish',
-          steps: [
-            '"🤖 AI Chat" tugmasini bosing',
-            'Model tanlang (yoki Avto qoldiring)',
-            'Savolingizni yozing va yuboring',
-          ]
+        { label:'Qanday ishlatish', color:'',
+          steps:['\"🤖 AI Chat\" tugmasini bosing','Model tanlang yoki Avto qoldiring','Savolingizni yozing']
         },
-        { label: 'Avto rejim tartibi',
-          p: 'Groq → limit tugsa → Gemini → limit tugsa → GPT-OSS'
+        { label:'Avto zanjir', color:'c-orange',
+          p:'<b>Groq</b> → limit tugsa → <b>Gemini</b> → limit tugsa → <b>GPT-OSS</b>'
         },
-        { label: 'Maslahat', list: [
-            'O\'zbek, rus yoki ingliz tilida yozing',
-            '"bugun", "hozir", "kurs" so\'zlari qidiruv yoqadi',
-            '/clear buyrug\'i — suhbat tarixini tozalash',
-          ]
+        { label:'Maslahat', color:'c-green',
+          list:['O\'zbek, rus yoki ingliz tilida yozing','\"bugun\", \"hozir\" — internet qidiruvni yoqadi','/clear — suhbat tarixini tozalash']
         },
       ]
     },
-    {
-      icon: '🎨', key: 'image', title: 'Rasm yaratish',
-      cards: [
-        { label: 'Haqida', p: 'Matn tavsifi asosida professional sifatli rasmlar. Flux Realism modeli, 1344×768 piksel.' },
-        {
-          label: 'Qanday ishlatish',
-          steps: [
-            '"🎨 Rasm" tugmasini bosing',
-            '"🎨 AI Rasm yaratish" tanlang',
-            'Rasmni o\'zbek, rus yoki inglizcha tasvirlab yozing',
-            'Bot promtni avtomatik yaxshilaydi — kuting (30–60 sek)',
-          ]
+    { icon:'🎨', ic:'ic-pink', title:'Rasm yaratish',
+      cards:[
+        { label:'Haqida', color:'',
+          p:'<b>Flux Realism</b> modeli bilan 1344×768 px professional rasmlar. Tavsifni o\'zbek, rus yoki ingliz tilida yozing — bot avtomatik yaxshilaydi.'
         },
-        { label: 'Misollar', list: [
-            'tog\'lar fonida ot, kechki kayfiyat',
-            'futuristik shahar, neon chiroqlar, yomg\'irli kecha',
-            'portret: yosh ayol, tabassumli, quyosh nuri',
-          ]
+        { label:'Qanday ishlatish', color:'',
+          steps:['\"🎨 Rasm\" → \"🎨 AI Rasm yaratish\" bosing','Rasmni tasvirlab yozing','Bot promtni yaxshilaydi (10–15 sek)','Rasm tayyor bo\'ladi (30–60 sek)']
         },
-        { label: 'Rasm tayyor bo\'lgandan keyin', list: [
-            '🔄 Qayta yaratish — yangi variant (xuddi shu tavsif)',
-            '✏️ Yangi rasm — yangi tavsif yozish',
-            '🔙 Menyu — asosiy menyuga qaytish',
-          ]
+        { label:'Misollar', color:'c-purple',
+          list:['tog\'lar fonida ot, kechki kayfiyat','futuristik shahar, neon chiroqlar','portret: yosh ayol, tabassumli, quyosh nuri']
         },
-        { label: 'Limit', p: 'Bepul: kuniga 5 ta rasm. 💎 Premium: cheksiz.' },
+        { label:'Limit', color:'c-orange',
+          rows:[['Bepul', '5 ta / kun'],['Premium 💎', 'Cheksiz']]
+        },
       ]
     },
-    {
-      icon: '🔊', key: 'tts', title: 'Matn → Ovoz',
-      cards: [
-        { label: 'ElevenLabs — yuqori sifat', list: [
-            '4 ta ovoz: Yosh ayol, Katta ayol, Yosh erkak, Katta erkak',
-            'Natural, insoniy ovoz sifati',
-            'Oylik 10,000 belgi (2 kalit = 20,000 jami)',
-          ]
+    { icon:'🔊', ic:'ic-teal', title:'Matn → Ovoz',
+      cards:[
+        { label:'ElevenLabs — yuqori sifat', color:'',
+          list:['4 ta ovoz: Yosh ayol, Katta ayol, Erkak, Katta erkak','Natural, insoniy ovoz','Oylik 10,000 belgi (2 kalit = 20,000)']
         },
-        { label: 'Edge TTS — bepul, cheksiz', list: [
-            '20 til: O\'zbek, Rus, Ingliz, Turk, Arab va boshqalar',
-            'Har til uchun erkak va ayol ovozi',
-            'Cheksiz foydalanish',
-          ]
+        { label:'Edge TTS — bepul, cheksiz', color:'c-green',
+          list:['20 til: O\'zbek, Rus, Ingliz, Turk, Arab va boshqalar','Har til uchun erkak va ayol ovozi','Hech qanday limit yo\'q']
         },
-        {
-          label: 'Qanday ishlatish',
-          steps: [
-            '"🔊 Matn → Ovoz" tugmasini bosing',
-            'Xizmat tanlang: ElevenLabs yoki Edge TTS',
-            'Til va ovoz tanlang',
-            '▶️ tugmasi — oldindan eshitib ko\'rish',
-            'Matnni yozing (max 3000 belgi)',
-          ]
+        { label:'Qanday ishlatish', color:'',
+          steps:['\"🔊 Matn → Ovoz\" bosing','Xizmat tanlang','Til va ovoz tanlang (▶️ eshitib ko\'ring)','Matnni yozing (max 3000 belgi)']
         },
-        { label: 'Maslahat', p: 'O\'zbek tili uchun Edge TTS → Sardor (erkak) yoki Madina (ayol) tavsiya etiladi.' },
+        { label:'Maslahat', color:'c-orange',
+          p:'O\'zbek tili uchun <b>Edge TTS → Sardor</b> (erkak) yoki <b>Madina</b> (ayol) tavsiya etiladi.'
+        },
       ]
     },
-    {
-      icon: '🌐', key: 'translate', title: 'Tarjima',
-      cards: [
-        { label: 'Haqida', p: '10 ta tilda tarjima. MyMemory API ishlatiladi.' },
-        { label: 'Tillar', list: [
-            'O\'zbek 🇺🇿', 'Rus 🇷🇺', 'Ingliz 🇺🇸', 'Turk 🇹🇷', 'Arab 🇸🇦',
-            'Xitoy 🇨🇳', 'Nemis 🇩🇪', 'Fransuz 🇫🇷', 'Koreys 🇰🇷', 'Yapon 🇯🇵',
-          ]
+    { icon:'🌐', ic:'ic-green', title:'Tarjima',
+      cards:[
+        { label:'Haqida', color:'',
+          p:'<b>MyMemory API</b> orqali 10 tilda tarjima. Har matn maksimal 1000 belgi.'
         },
-        {
-          label: 'Qanday ishlatish',
-          steps: [
-            '"🌐 Tarjima" tugmasini bosing',
-            'Qaysi tildan tarjima → tanlang',
-            'Qaysi tilga tarjima → tanlang',
-            'Matnni yozing',
-          ]
+        { label:'Tillar', color:'',
+          list:['O\'zbek 🇺🇿 · Rus 🇷🇺 · Ingliz 🇺🇸 · Turk 🇹🇷 · Arab 🇸🇦','Xitoy 🇨🇳 · Nemis 🇩🇪 · Fransuz 🇫🇷 · Koreys 🇰🇷 · Yapon 🇯🇵']
         },
-        { label: 'Limit', p: 'Bir matn maksimal 1000 belgi.' },
+        { label:'Qanday ishlatish', color:'',
+          steps:['\"🌐 Tarjima\" bosing','Qaysi tildan → tanlang','Qaysi tilga → tanlang','Matnni yozing']
+        },
       ]
     },
-    {
-      icon: '⬇️', key: 'download', title: 'Video yuklab olish',
-      cards: [
-        { label: 'Qo\'llab-quvvatlanadigan saytlar', list: [
-            'YouTube (youtube.com, youtu.be)',
-            'Instagram (Reel, Post)',
-          ]
+    { icon:'⬇️', ic:'ic-orange', title:'Video yuklab olish',
+      cards:[
+        { label:'Qo\'llab-quvvatlanadigan', color:'',
+          list:['YouTube (youtube.com, youtu.be)','Instagram (Reel, Post)']
         },
-        {
-          label: 'Qanday ishlatish',
-          steps: [
-            '"⬇️ Video yuklab olish" tugmasini bosing',
-            'Video linkini yuboring',
-            'YouTube: format tanlang (360p / 720p / 1080p / MP3)',
-            'Bot yuklab beradi',
-          ]
+        { label:'Qanday ishlatish', color:'',
+          steps:['\"⬇️ Video yuklab olish\" bosing','Linkni yuboring','YouTube: format tanlang (360p / 720p / 1080p / MP3)','Bot yuklab jo\'natadi']
         },
-        { label: 'MP3 qidirish', p: 'Qo\'shiq nomini yozing: mp3 Shaxriyor sevgilim' },
-        { label: 'Eslatma', p: 'Telegram 50MB limitni qo\'llaydi. Katta videolar biroz vaqt oladi.' },
+        { label:'MP3 qidirish', color:'c-green',
+          p:'Qo\'shiq nomini yozing: <b>mp3 Shaxriyor sevgilim</b>'
+        },
+        { label:'Eslatma', color:'c-orange',
+          p:'Telegram <b>50 MB</b> limitni qo\'llaydi. Katta videolar biroz vaqt oladi.'
+        },
       ]
     },
-    {
-      icon: '❓', key: 'faq', title: 'Ko\'p savollar',
-      cards: [
-        { label: 'Bot nima qila oladi?', p: 'AI suhbat, rasm yaratish, TTS, tarjima, video yuklab olish, musiqa, sport yangiliklari, valyuta kursi va ko\'p narsa.' },
-        { label: 'Bepul nimalar bepul?', list: [
-            'AI Chat (Groq/Gemini/GPT-OSS) — cheksiz',
-            'Rasm yaratish — kuniga 5 ta',
-            'TTS Edge — cheksiz',
-            'TTS ElevenLabs — oyda 20,000 belgi',
-            'Tarjima — cheksiz',
-            'Video yuklab olish — cheksiz',
+    { icon:'❓', ic:'ic-purp', title:'Ko\'p savollar',
+      cards:[
+        { label:'Bepul nimalar bepul?', color:'c-green',
+          rows:[
+            ['AI Chat','♾️ Cheksiz'],['Tarjima','♾️ Cheksiz'],
+            ['Video yuklab olish','♾️ Cheksiz'],['TTS Edge','♾️ Cheksiz'],
+            ['TTS ElevenLabs','20,000 belgi/oy'],['Rasm yaratish','5 ta/kun'],
           ]
         },
-        { label: 'Ovozli savol ishlamayapti?', p: 'Aniq va shovqinsiz joyda gapiring. O\'zbek tilida gapirsangiz to\'g\'riroq taniydi.' },
-        { label: 'AI noto\'g\'ri javob berdi?', p: '/clear buyrug\'i bilan suhbat tarixini tozalab, qayta so\'rang.' },
-        { label: 'Tilni qanday o\'zgartiraman?', p: '/lang buyrug\'ini bosing — til tanlash menyusi chiqadi.' },
-        { label: 'Muammo bo\'lsa?', p: 'Admin: @samandar_gofurov' },
+        { label:'Ovozli savol ishlamayapti?', color:'',
+          p:'Aniq va shovqinsiz joyda gapiring. O\'zbek tilida gapirsangiz to\'g\'riroq taniydi.'
+        },
+        { label:'AI noto\'g\'ri javob berdi?', color:'',
+          p:'<b>/clear</b> buyrug\'i bilan suhbat tarixini tozalab, qayta so\'rang.'
+        },
+        { label:'Tilni qanday o\'zgartiraman?', color:'',
+          p:'<b>/lang</b> buyrug\'ini bosing — til tanlash menyusi chiqadi.'
+        },
+        { label:'Muammo yoki savol', color:'c-purple',
+          p:'Admin: <b>@samandar_gofurov</b>'
+        },
       ]
     },
-  ],
+  ]
+},
 
-  ru: [
-    {
-      icon: '🤖', key: 'ai_chat', title: 'AI Chat',
-      cards: [
-        {
-          label: 'Модели',
-          models: [
-            { icon: '⚡', name: 'Groq Llama 3.3 70B', desc: 'Самый быстрый ответ. Используется первым в режиме Авто.' },
-            { icon: '🔵', name: 'Gemini 2.5 Flash',   desc: 'Google AI. Также анализирует изображения.' },
-            { icon: '🟠', name: 'GPT-OSS 120B',       desc: 'Открытая модель OpenAI. Используется как резерв.' },
-            { icon: '🤖', name: 'Авто',               desc: 'Бот сам выбирает лучшую модель. Рекомендуется.' },
+ru: {
+  hero: {
+    title: '📚 Руководство',
+    sub:   'UzGenie — бесплатный AI-помощник. Подробно обо всех функциях.',
+    badges: ['Бесплатно', 'AI Chat', 'TTS 20 языков']
+  },
+  tabs: ['🤖 AI Chat', '🎨 Изображения', '🔊 Голос', '🌐 Перевод', '⬇️ Видео', '❓ FAQ'],
+  sections: [
+    { icon:'🤖', ic:'ic-blue', title:'AI Chat',
+      cards:[
+        { label:'Модели', color:'',
+          models:[
+            {ico:'⚡', name:'Groq Llama 3.3 70B', desc:'Самый быстрый. Используется первым в режиме Авто.'},
+            {ico:'🔵', name:'Gemini 2.5 Flash',   desc:'Google AI. Анализирует изображения.'},
+            {ico:'🟠', name:'GPT-OSS 120B',       desc:'Открытая модель OpenAI. Используется как резерв.'},
+            {ico:'🤖', name:'Авто',               desc:'Бот сам выбирает лучшую модель. Рекомендуется.'},
           ]
         },
-        {
-          label: 'Как использовать',
-          steps: [
-            'Нажмите кнопку "🤖 AI Chat"',
-            'Выберите модель (или оставьте Авто)',
-            'Напишите вопрос и отправьте',
-          ]
+        { label:'Как использовать', color:'',
+          steps:['Нажмите «🤖 AI Chat»','Выберите модель или оставьте Авто','Напишите вопрос и отправьте']
         },
-        { label: 'Порядок в режиме Авто',
-          p: 'Groq → лимит → Gemini → лимит → GPT-OSS'
+        { label:'Порядок в режиме Авто', color:'c-orange',
+          p:'<b>Groq</b> → лимит → <b>Gemini</b> → лимит → <b>GPT-OSS</b>'
         },
-        { label: 'Советы', list: [
-            'Пишите на узбекском, русском или английском',
-            'Слова "сегодня", "сейчас", "курс" активируют поиск',
-            '/clear — очистить историю диалога',
-          ]
+        { label:'Советы', color:'c-green',
+          list:['Пишите на узбекском, русском или английском','«сегодня», «сейчас» — активируют поиск в интернете','/clear — очистить историю диалога']
         },
       ]
     },
-    {
-      icon: '🎨', key: 'image', title: 'Создание изображений',
-      cards: [
-        { label: 'О функции', p: 'Создание профессиональных изображений по описанию. Модель Flux Realism, разрешение 1344×768.' },
-        {
-          label: 'Как использовать',
-          steps: [
-            'Нажмите кнопку "🎨 Изображение"',
-            'Выберите "🎨 Создать AI-изображение"',
-            'Опишите изображение на любом языке',
-            'Бот автоматически улучшит промпт — подождите 30–60 сек',
-          ]
+    { icon:'🎨', ic:'ic-pink', title:'Создание изображений',
+      cards:[
+        { label:'О функции', color:'',
+          p:'Модель <b>Flux Realism</b>, разрешение 1344×768 пикселей. Опишите изображение на любом языке — бот автоматически улучшит промпт.'
         },
-        { label: 'Примеры', list: [
-            'лошадь на фоне гор, вечерний закат',
-            'футуристический город, неоновые огни, дождливая ночь',
-            'портрет молодой женщины, улыбка, солнечный свет',
-          ]
+        { label:'Как использовать', color:'',
+          steps:['Нажмите «🎨 Изображение» → «🎨 Создать AI-изображение»','Опишите изображение','Бот улучшает промпт (10–15 сек)','Изображение готово (30–60 сек)']
         },
-        { label: 'После создания', list: [
-            '🔄 Создать ещё — новый вариант с тем же описанием',
-            '✏️ Новое изображение — написать новое описание',
-            '🔙 Меню — вернуться в главное меню',
-          ]
+        { label:'Примеры', color:'c-purple',
+          list:['лошадь на фоне гор, вечерний закат','футуристический город, неоновые огни','портрет молодой женщины, улыбка, солнце']
         },
-        { label: 'Лимит', p: 'Бесплатно: 5 изображений в день. 💎 Premium: без ограничений.' },
+        { label:'Лимит', color:'c-orange',
+          rows:[['Бесплатно', '5 шт / день'],['Premium 💎', 'Без ограничений']]
+        },
       ]
     },
-    {
-      icon: '🔊', key: 'tts', title: 'Текст → Голос',
-      cards: [
-        { label: 'ElevenLabs — высокое качество', list: [
-            '4 голоса: молодая женщина, взрослая женщина, молодой мужчина, взрослый мужчина',
-            'Натуральный, человеческий голос',
-            '10,000 символов в месяц (2 ключа = 20,000)',
-          ]
+    { icon:'🔊', ic:'ic-teal', title:'Текст → Голос',
+      cards:[
+        { label:'ElevenLabs — высокое качество', color:'',
+          list:['4 голоса: молодая женщина, взрослая женщина, мужской, взрослый мужчина','Натуральный, человеческий голос','10,000 символов в месяц (2 ключа = 20,000)']
         },
-        { label: 'Edge TTS — бесплатно, безлимитно', list: [
-            '20 языков: узбекский, русский, английский, турецкий, арабский и другие',
-            'Мужской и женский голос для каждого языка',
-            'Без ограничений',
-          ]
+        { label:'Edge TTS — бесплатно, безлимитно', color:'c-green',
+          list:['20 языков: узбекский, русский, английский, турецкий и другие','Мужской и женский голос для каждого языка','Без ограничений']
         },
-        {
-          label: 'Как использовать',
-          steps: [
-            'Нажмите "🔊 Текст → Голос"',
-            'Выберите сервис: ElevenLabs или Edge TTS',
-            'Выберите язык и голос',
-            '▶️ — прослушать голос заранее',
-            'Введите текст (макс. 3000 символов)',
-          ]
+        { label:'Как использовать', color:'',
+          steps:['Нажмите «🔊 Текст → Голос»','Выберите сервис','Выберите язык и голос (▶️ прослушать)','Введите текст (макс. 3000 символов)']
         },
-        { label: 'Совет', p: 'Для узбекского языка рекомендуем Edge TTS → Sardor (муж.) или Madina (жен.).' },
+        { label:'Совет', color:'c-orange',
+          p:'Для узбекского языка: <b>Edge TTS → Sardor</b> (муж.) или <b>Madina</b> (жен.).'
+        },
       ]
     },
-    {
-      icon: '🌐', key: 'translate', title: 'Перевод',
-      cards: [
-        { label: 'О функции', p: 'Перевод на 10 языков. Используется MyMemory API.' },
-        { label: 'Языки', list: [
-            'Узбекский 🇺🇿', 'Русский 🇷🇺', 'Английский 🇺🇸', 'Турецкий 🇹🇷', 'Арабский 🇸🇦',
-            'Китайский 🇨🇳', 'Немецкий 🇩🇪', 'Французский 🇫🇷', 'Корейский 🇰🇷', 'Японский 🇯🇵',
-          ]
+    { icon:'🌐', ic:'ic-green', title:'Перевод',
+      cards:[
+        { label:'О функции', color:'',
+          p:'<b>MyMemory API</b> — перевод на 10 языков. Максимум 1000 символов за раз.'
         },
-        {
-          label: 'Как использовать',
-          steps: [
-            'Нажмите "🌐 Перевод"',
-            'Выберите исходный язык',
-            'Выберите язык перевода',
-            'Введите текст',
-          ]
+        { label:'Языки', color:'',
+          list:['Узбекский 🇺🇿 · Русский 🇷🇺 · Английский 🇺🇸 · Турецкий 🇹🇷 · Арабский 🇸🇦','Китайский 🇨🇳 · Немецкий 🇩🇪 · Французский 🇫🇷 · Корейский 🇰🇷 · Японский 🇯🇵']
         },
-        { label: 'Лимит', p: 'Максимум 1000 символов за один перевод.' },
+        { label:'Как использовать', color:'',
+          steps:['Нажмите «🌐 Перевод»','Выберите исходный язык','Выберите язык перевода','Введите текст']
+        },
       ]
     },
-    {
-      icon: '⬇️', key: 'download', title: 'Скачать видео',
-      cards: [
-        { label: 'Поддерживаемые сайты', list: [
-            'YouTube (youtube.com, youtu.be)',
-            'Instagram (Reel, Post)',
-          ]
+    { icon:'⬇️', ic:'ic-orange', title:'Скачать видео',
+      cards:[
+        { label:'Поддерживаемые сайты', color:'',
+          list:['YouTube (youtube.com, youtu.be)','Instagram (Reel, Post)']
         },
-        {
-          label: 'Как использовать',
-          steps: [
-            'Нажмите "⬇️ Скачать видео"',
-            'Отправьте ссылку на видео',
-            'Для YouTube выберите формат (360p / 720p / 1080p / MP3)',
-            'Бот скачает и отправит файл',
-          ]
+        { label:'Как использовать', color:'',
+          steps:['Нажмите «⬇️ Скачать видео»','Отправьте ссылку','YouTube: выберите формат (360p / 720p / 1080p / MP3)','Бот скачает и отправит файл']
         },
-        { label: 'Поиск MP3', p: 'Введите название песни: mp3 Shaxriyor sevgilim' },
-        { label: 'Примечание', p: 'Telegram ограничивает файлы до 50МБ. Большие видео занимают больше времени.' },
+        { label:'Поиск MP3', color:'c-green',
+          p:'Введите название: <b>mp3 Shaxriyor sevgilim</b>'
+        },
+        { label:'Примечание', color:'c-orange',
+          p:'Telegram ограничивает файлы до <b>50 МБ</b>. Большие видео занимают больше времени.'
+        },
       ]
     },
-    {
-      icon: '❓', key: 'faq', title: 'Частые вопросы',
-      cards: [
-        { label: 'Что умеет бот?', p: 'AI-чат, генерация изображений, TTS, перевод, скачивание видео, музыка, спорт, курс валют и многое другое.' },
-        { label: 'Что бесплатно?', list: [
-            'AI Chat (Groq/Gemini/GPT-OSS) — без ограничений',
-            'Генерация изображений — 5 в день',
-            'TTS Edge — безлимитно',
-            'TTS ElevenLabs — 20,000 символов в месяц',
-            'Перевод — без ограничений',
-            'Скачивание видео — без ограничений',
+    { icon:'❓', ic:'ic-purp', title:'Частые вопросы',
+      cards:[
+        { label:'Что бесплатно?', color:'c-green',
+          rows:[
+            ['AI Chat','♾️ Безлимитно'],['Перевод','♾️ Безлимитно'],
+            ['Скачивание видео','♾️ Безлимитно'],['TTS Edge','♾️ Безлимитно'],
+            ['TTS ElevenLabs','20,000 симв./мес.'],['Генерация изображений','5 шт/день'],
           ]
         },
-        { label: 'Голосовой вопрос не работает?', p: 'Говорите чётко в тихом месте.' },
-        { label: 'AI дал неверный ответ?', p: 'Используйте /clear для очистки истории и задайте вопрос заново.' },
-        { label: 'Как сменить язык?', p: 'Введите /lang — появится меню выбора языка.' },
-        { label: 'Вопросы и проблемы:', p: 'Администратор: @samandar_gofurov' },
+        { label:'Голосовой вопрос не работает?', color:'',
+          p:'Говорите чётко в тихом месте. Узбекский язык распознаётся лучше.'
+        },
+        { label:'AI дал неверный ответ?', color:'',
+          p:'Введите <b>/clear</b> для очистки истории и задайте вопрос заново.'
+        },
+        { label:'Как сменить язык?', color:'',
+          p:'Введите <b>/lang</b> — появится меню выбора языка.'
+        },
+        { label:'Вопросы и проблемы', color:'c-purple',
+          p:'Администратор: <b>@samandar_gofurov</b>'
+        },
       ]
     },
-  ],
+  ]
+},
 
-  en: [
-    {
-      icon: '🤖', key: 'ai_chat', title: 'AI Chat',
-      cards: [
-        {
-          label: 'Models',
-          models: [
-            { icon: '⚡', name: 'Groq Llama 3.3 70B', desc: 'Fastest responses. Used first in Auto mode.' },
-            { icon: '🔵', name: 'Gemini 2.5 Flash',   desc: 'Google AI. Can also analyze images.' },
-            { icon: '🟠', name: 'GPT-OSS 120B',       desc: 'OpenAI open model. Used as backup.' },
-            { icon: '🤖', name: 'Auto',               desc: 'Bot picks the best model. Recommended.' },
+en: {
+  hero: {
+    title: '📚 Guide',
+    sub:   'UzGenie — free AI assistant. Detailed info about all features.',
+    badges: ['Free', 'AI Chat', 'TTS 20 langs']
+  },
+  tabs: ['🤖 AI Chat', '🎨 Images', '🔊 Voice', '🌐 Translate', '⬇️ Download', '❓ FAQ'],
+  sections: [
+    { icon:'🤖', ic:'ic-blue', title:'AI Chat',
+      cards:[
+        { label:'Models', color:'',
+          models:[
+            {ico:'⚡', name:'Groq Llama 3.3 70B', desc:'Fastest. Used first in Auto mode.'},
+            {ico:'🔵', name:'Gemini 2.5 Flash',   desc:'Google AI. Also analyzes images.'},
+            {ico:'🟠', name:'GPT-OSS 120B',       desc:'OpenAI open model. Used as backup.'},
+            {ico:'🤖', name:'Auto',               desc:'Bot picks the best model. Recommended.'},
           ]
         },
-        {
-          label: 'How to use',
-          steps: [
-            'Press "🤖 AI Chat" button',
-            'Select a model (or keep Auto)',
-            'Type your question and send',
-          ]
+        { label:'How to use', color:'',
+          steps:['Press "🤖 AI Chat"','Select a model or keep Auto','Type your question and send']
         },
-        { label: 'Auto mode order', p: 'Groq → limit → Gemini → limit → GPT-OSS' },
-        { label: 'Tips', list: [
-            'Write in Uzbek, Russian, or English',
-            'Words "today", "now", "price" activate web search',
-            '/clear — clear conversation history',
-          ]
+        { label:'Auto order', color:'c-orange',
+          p:'<b>Groq</b> → limit → <b>Gemini</b> → limit → <b>GPT-OSS</b>'
+        },
+        { label:'Tips', color:'c-green',
+          list:['Write in Uzbek, Russian, or English','"today", "now" — activates web search','/clear — clear conversation history']
         },
       ]
     },
-    {
-      icon: '🎨', key: 'image', title: 'Image Generation',
-      cards: [
-        { label: 'About', p: 'Create professional images from text descriptions. Flux Realism model, 1344×768 resolution.' },
-        {
-          label: 'How to use',
-          steps: [
-            'Press "🎨 Image" button',
-            'Select "🎨 Generate AI Image"',
-            'Describe the image in any language',
-            'Bot auto-enhances prompt — wait 30–60 sec',
-          ]
+    { icon:'🎨', ic:'ic-pink', title:'Image Generation',
+      cards:[
+        { label:'About', color:'',
+          p:'<b>Flux Realism</b> model, 1344×768 px. Describe in any language — bot auto-enhances the prompt.'
         },
-        { label: 'Examples', list: [
-            'horse in the mountains, evening mood',
-            'futuristic city, neon lights, rainy night',
-            'portrait of a young woman, smiling, sunlight',
-          ]
+        { label:'How to use', color:'',
+          steps:['Press "🎨 Image" → "🎨 Generate AI Image"','Describe the image','Bot enhances prompt (10–15 sec)','Image ready (30–60 sec)']
         },
-        { label: 'After creation', list: [
-            '🔄 Regenerate — new variant with same description',
-            '✏️ New Image — write a new description',
-            '🔙 Menu — return to main menu',
-          ]
+        { label:'Examples', color:'c-purple',
+          list:['horse in mountains, evening mood','futuristic city, neon lights, rain','portrait of young woman, smiling, sunlight']
         },
-        { label: 'Limit', p: 'Free: 5 images per day. 💎 Premium: unlimited.' },
+        { label:'Limit', color:'c-orange',
+          rows:[['Free', '5 images / day'],['Premium 💎', 'Unlimited']]
+        },
       ]
     },
-    {
-      icon: '🔊', key: 'tts', title: 'Text → Voice',
-      cards: [
-        { label: 'ElevenLabs — high quality', list: [
-            '4 voices: young woman, mature woman, young man, mature man',
-            'Natural, human-like voice',
-            '10,000 chars/month (2 keys = 20,000 total)',
-          ]
+    { icon:'🔊', ic:'ic-teal', title:'Text → Voice',
+      cards:[
+        { label:'ElevenLabs — high quality', color:'',
+          list:['4 voices: young woman, mature woman, young man, mature man','Natural, human-like voice','10,000 chars/month (2 keys = 20,000)']
         },
-        { label: 'Edge TTS — free, unlimited', list: [
-            '20 languages: Uzbek, Russian, English, Turkish, Arabic and more',
-            'Male and female voice for each language',
-            'No limits',
-          ]
+        { label:'Edge TTS — free, unlimited', color:'c-green',
+          list:['20 languages: Uzbek, Russian, English, Turkish, Arabic and more','Male and female voice per language','No limits at all']
         },
-        {
-          label: 'How to use',
-          steps: [
-            'Press "🔊 Text → Voice"',
-            'Choose service: ElevenLabs or Edge TTS',
-            'Select language and voice',
-            '▶️ — preview the voice',
-            'Type your text (max 3000 chars)',
-          ]
+        { label:'How to use', color:'',
+          steps:['Press "🔊 Text → Voice"','Choose service','Select language and voice (▶️ preview)','Type text (max 3000 chars)']
         },
-        { label: 'Tip', p: 'For Uzbek, Edge TTS → Sardor (male) or Madina (female) recommended.' },
+        { label:'Tip', color:'c-orange',
+          p:'For Uzbek: <b>Edge TTS → Sardor</b> (male) or <b>Madina</b> (female).'
+        },
       ]
     },
-    {
-      icon: '🌐', key: 'translate', title: 'Translation',
-      cards: [
-        { label: 'About', p: 'Translate in 10 languages. Uses MyMemory API.' },
-        { label: 'Languages', list: [
-            'Uzbek 🇺🇿', 'Russian 🇷🇺', 'English 🇺🇸', 'Turkish 🇹🇷', 'Arabic 🇸🇦',
-            'Chinese 🇨🇳', 'German 🇩🇪', 'French 🇫🇷', 'Korean 🇰🇷', 'Japanese 🇯🇵',
-          ]
+    { icon:'🌐', ic:'ic-green', title:'Translation',
+      cards:[
+        { label:'About', color:'',
+          p:'<b>MyMemory API</b> — translate in 10 languages. Max 1000 chars per translation.'
         },
-        {
-          label: 'How to use',
-          steps: [
-            'Press "🌐 Translate"',
-            'Select source language',
-            'Select target language',
-            'Type the text',
-          ]
+        { label:'Languages', color:'',
+          list:['Uzbek 🇺🇿 · Russian 🇷🇺 · English 🇺🇸 · Turkish 🇹🇷 · Arabic 🇸🇦','Chinese 🇨🇳 · German 🇩🇪 · French 🇫🇷 · Korean 🇰🇷 · Japanese 🇯🇵']
         },
-        { label: 'Limit', p: 'Maximum 1000 characters per translation.' },
+        { label:'How to use', color:'',
+          steps:['Press "🌐 Translate"','Select source language','Select target language','Type the text']
+        },
       ]
     },
-    {
-      icon: '⬇️', key: 'download', title: 'Download Video',
-      cards: [
-        { label: 'Supported sites', list: [
-            'YouTube (youtube.com, youtu.be)',
-            'Instagram (Reel, Post)',
-          ]
+    { icon:'⬇️', ic:'ic-orange', title:'Download Video',
+      cards:[
+        { label:'Supported sites', color:'',
+          list:['YouTube (youtube.com, youtu.be)','Instagram (Reel, Post)']
         },
-        {
-          label: 'How to use',
-          steps: [
-            'Press "⬇️ Download Video"',
-            'Send the video link',
-            'For YouTube choose format (360p / 720p / 1080p / MP3)',
-            'Bot will download and send the file',
-          ]
+        { label:'How to use', color:'',
+          steps:['Press "⬇️ Download Video"','Send the link','YouTube: choose format (360p / 720p / 1080p / MP3)','Bot downloads and sends the file']
         },
-        { label: 'MP3 search', p: 'Type the song name: mp3 Shaxriyor sevgilim' },
-        { label: 'Note', p: 'Telegram limits files to 50MB. Large videos take longer.' },
+        { label:'MP3 search', color:'c-green',
+          p:'Type the song name: <b>mp3 Shaxriyor sevgilim</b>'
+        },
+        { label:'Note', color:'c-orange',
+          p:'Telegram limits files to <b>50 MB</b>. Large videos may take longer.'
+        },
       ]
     },
-    {
-      icon: '❓', key: 'faq', title: 'FAQ',
-      cards: [
-        { label: 'What can the bot do?', p: 'AI chat, image generation, TTS, translation, video download, music, sports, currency rates and much more.' },
-        { label: 'What is free?', list: [
-            'AI Chat (Groq/Gemini/GPT-OSS) — unlimited',
-            'Image generation — 5 per day',
-            'TTS Edge — unlimited',
-            'TTS ElevenLabs — 20,000 chars/month',
-            'Translation — unlimited',
-            'Video download — unlimited',
+    { icon:'❓', ic:'ic-purp', title:'FAQ',
+      cards:[
+        { label:'What is free?', color:'c-green',
+          rows:[
+            ['AI Chat','♾️ Unlimited'],['Translation','♾️ Unlimited'],
+            ['Video download','♾️ Unlimited'],['TTS Edge','♾️ Unlimited'],
+            ['TTS ElevenLabs','20,000 chars/mo'],['Image generation','5/day'],
           ]
         },
-        { label: 'Voice question not working?', p: 'Speak clearly in a quiet place. Uzbek is recognized best.' },
-        { label: 'AI gave wrong answer?', p: 'Use /clear to clear history and ask again.' },
-        { label: 'How to change language?', p: 'Type /lang — a language selection menu will appear.' },
-        { label: 'Questions or problems?', p: 'Admin: @samandar_gofurov' },
+        { label:'Voice question not working?', color:'',
+          p:'Speak clearly in a quiet place. Uzbek is recognized best.'
+        },
+        { label:'AI gave wrong answer?', color:'',
+          p:'Type <b>/clear</b> to clear history and ask again.'
+        },
+        { label:'How to change language?', color:'',
+          p:'Type <b>/lang</b> — a language selection menu will appear.'
+        },
+        { label:'Questions or problems', color:'c-purple',
+          p:'Admin: <b>@samandar_gofurov</b>'
+        },
       ]
     },
-  ],
+  ]
+},
 };
 
-/* ── Render ──────────────────────────────────────────────────── */
-function renderCard(card) {
-  let inner = `<div class="card-label">${card.label}</div>`;
+/* ── RENDER ──────────────────────────────────────────────────── */
+function renderCard(c) {
+  const cls = `card ${c.color||''}`;
+  let body = `<div class="card-label">${c.label}</div>`;
 
-  if (card.models) {
-    inner += card.models.map(m => `
-      <div class="model-card">
-        <div class="model-icon">${m.icon}</div>
-        <div>
-          <div class="model-name">${m.name}</div>
-          <div class="model-desc">${m.desc}</div>
-        </div>
-      </div>`).join('');
-  } else if (card.steps) {
-    inner += `<div class="steps">${card.steps.map((s, i) => `
-      <div class="step">
-        <div class="step-num">${i + 1}</div>
-        <div class="step-text">${s}</div>
+  if (c.models) {
+    body += `<div class="models">${c.models.map(m=>`
+      <div class="model">
+        <div class="model-ico">${m.ico}</div>
+        <div><div class="model-name">${m.name}</div><div class="model-desc">${m.desc}</div></div>
       </div>`).join('')}</div>`;
-  } else if (card.list) {
-    inner += `<ul>${card.list.map(li => `<li>${li}</li>`).join('')}</ul>`;
-  } else if (card.p) {
-    inner += `<p>${card.p}</p>`;
+  } else if (c.steps) {
+    body += `<div class="steps">${c.steps.map((s,i)=>`
+      <div class="step"><div class="step-n">${i+1}</div><div class="step-t">${s}</div></div>`
+    ).join('')}</div>`;
+  } else if (c.rows) {
+    body += c.rows.map(([k,v])=>`
+      <div class="info-row"><span class="info-key">${k}</span><span class="info-val">${v}</span></div>`
+    ).join('');
+  } else if (c.list) {
+    body += `<ul>${c.list.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+  } else if (c.p) {
+    body += `<p>${c.p}</p>`;
   }
 
-  return `<div class="card">${inner}</div>`;
+  return `<div class="${cls}">${body}</div>`;
 }
 
 function render() {
-  const sections = DATA[lang];
+  const d = D[lang];
 
-  /* tabs */
-  document.getElementById('tabs').innerHTML = sections.map((s, i) =>
-    `<button class="tab-btn${i === activeTab ? ' active' : ''}" onclick="setTab(${i})">
-       ${s.icon} ${s.title}
-     </button>`
+  // tabs
+  document.getElementById('tabs').innerHTML = d.tabs.map((t,i)=>
+    `<button class="tab${i===tab?' active':''}" onclick="setTab(${i})">${t}</button>`
   ).join('');
 
-  /* content */
-  const sec = sections[activeTab];
-  document.getElementById('content').innerHTML =
-    `<div class="section active">
-       <div class="section-title">${sec.icon} ${sec.title}</div>
-       ${sec.cards.map(renderCard).join('')}
-     </div>`;
+  // section
+  const s = d.sections[tab];
+  const heroD = d.hero;
+
+  document.getElementById('main').innerHTML = `
+    <div class="hero">
+      <div class="hero-title">${heroD.title}</div>
+      <div class="hero-sub">${heroD.sub}</div>
+      <div class="hero-badges">
+        ${heroD.badges.map((b,i)=>`<span class="hbadge ${['hb-blue','hb-green','hb-purp'][i]||'hb-blue'}">${b}</span>`).join('')}
+      </div>
+    </div>
+    <div style="height:14px"></div>
+    <div class="sec-head">
+      <div class="sec-icon ${s.ic}">${s.icon}</div>
+      <div class="sec-title">${s.title}</div>
+    </div>
+    ${s.cards.map(renderCard).join('')}
+  `;
 }
 
 function setLang(l) {
   lang = l;
-  activeTab = 0;
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent.toLowerCase() === l);
-  });
+  tab  = 0;
+  document.querySelectorAll('.lang-pill').forEach(b=>
+    b.classList.toggle('active', b.textContent.toLowerCase()===l)
+  );
   render();
-  window.scrollTo(0, 0);
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function setTab(i) {
-  activeTab = i;
+  tab = i;
   render();
-  window.scrollTo(0, 64); // tabs height
+  window.scrollTo({top: 108, behavior:'smooth'});
 }
 
-/* ── Init ────────────────────────────────────────────────────── */
-document.querySelectorAll('.lang-btn').forEach(b => {
-  b.classList.toggle('active', b.textContent.toLowerCase() === lang);
-});
+// Init
+document.querySelectorAll('.lang-pill').forEach(b=>
+  b.classList.toggle('active', b.textContent.toLowerCase()===lang)
+);
 render();
 </script>
 </body>
