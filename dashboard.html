@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>UzGenie — Admin Dashboard</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg:    #0d1117;
+      --bg2:   #161b22;
+      --bg3:   #1c2333;
+      --text:  #e6edf3;
+      --muted: #8b949e;
+      --a1:    #2ca5e0;
+      --a2:    #7b5cf0;
+      --green: #3fb950;
+      --orange:#d29922;
+      --red:   #f85149;
+      --grad:  linear-gradient(135deg,#2ca5e0,#7b5cf0);
+      --r:     12px;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; padding-bottom:24px; }
+
+    .topbar {
+      background:rgba(13,17,23,.95); backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 16px; height:52px;
+      position:sticky; top:0; z-index:10;
+    }
+    .logo { display:flex; align-items:center; gap:8px; }
+    .logo-icon { width:28px;height:28px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px; }
+    .logo-name { font-size:16px;font-weight:700; }
+    .logo-name span { background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+    .admin-badge { background:rgba(210,153,34,.15);border:1px solid rgba(210,153,34,.3);color:#e3b341;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px; }
+
+    .main { padding:14px; }
+
+    /* ── BIG STATS ── */
+    .big-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+    .big-card {
+      background:var(--bg2); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--r); padding:16px;
+      position:relative; overflow:hidden;
+    }
+    .big-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    }
+    .bc-blue::before  { background:var(--a1); }
+    .bc-green::before { background:var(--green); }
+    .bc-purp::before  { background:var(--a2); }
+    .bc-orange::before{ background:var(--orange); }
+
+    .big-num { font-size:30px;font-weight:800;letter-spacing:-1px; }
+    .big-label { font-size:12px;color:var(--muted);margin-top:3px; }
+    .big-icon { position:absolute;top:14px;right:14px;font-size:22px;opacity:.4; }
+
+    /* ── SECTION ── */
+    .sec-title { font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--a1);margin:16px 0 8px; }
+
+    .card {
+      background:var(--bg2); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--r); overflow:hidden; margin-bottom:10px;
+    }
+    .row {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:10px 14px; border-bottom:1px solid rgba(255,255,255,.04);
+      font-size:14px;
+    }
+    .row:last-child { border-bottom:none; }
+    .row-key { color:var(--muted); display:flex; align-items:center; gap:7px; }
+    .row-val { font-weight:700; }
+    .v-green  { color:var(--green); }
+    .v-blue   { color:var(--a1); }
+    .v-orange { color:var(--orange); }
+    .v-purp   { color:var(--a2); }
+
+    /* ── BAR ── */
+    .prog { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,.04); }
+    .prog:last-child { border-bottom:none; }
+    .prog-top { display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px; }
+    .prog-name { font-weight:600; display:flex;align-items:center;gap:6px; }
+    .prog-pct  { font-weight:700; }
+    .bar { height:5px;background:var(--bg3);border-radius:5px;overflow:hidden; }
+    .bf { height:100%;border-radius:5px; }
+    .bf-blue   { background:var(--grad); }
+    .bf-green  { background:linear-gradient(90deg,#3fb950,#56d364); }
+    .bf-orange { background:linear-gradient(90deg,#d29922,#f0a030); }
+    .bf-red    { background:linear-gradient(90deg,#f85149,#ff6a5e); }
+
+    /* ── PREMIUM LIST ── */
+    .prem-item {
+      display:flex; align-items:center; gap:10px;
+      padding:10px 14px; border-bottom:1px solid rgba(255,255,255,.04);
+    }
+    .prem-item:last-child { border-bottom:none; }
+    .prem-av {
+      width:34px;height:34px;border-radius:50%;
+      background:var(--grad);
+      display:flex;align-items:center;justify-content:center;
+      font-size:14px;font-weight:700;flex-shrink:0;
+    }
+    .prem-name { font-size:14px;font-weight:600; }
+    .prem-date { font-size:12px;color:var(--muted);margin-top:1px; }
+    .prem-badge { margin-left:auto;background:rgba(123,92,240,.15);border:1px solid rgba(123,92,240,.3);color:#d2a8ff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px; }
+
+    /* ── UPDATE TIME ── */
+    .update-time { text-align:center;font-size:11px;color:var(--muted);margin-top:16px; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">🤖</div>
+    <span class="logo-name">Uz<span>Genie</span></span>
+  </div>
+  <div class="admin-badge">👑 Admin</div>
+</div>
+
+<div class="main">
+
+  <!-- Big stats -->
+  <div class="big-grid">
+    <div class="big-card bc-blue">
+      <div class="big-icon">👥</div>
+      <div class="big-num" id="s-total">0</div>
+      <div class="big-label">Jami foydalanuvchi</div>
+    </div>
+    <div class="big-card bc-green">
+      <div class="big-icon">🟢</div>
+      <div class="big-num" id="s-today">0</div>
+      <div class="big-label">Bugun aktiv</div>
+    </div>
+    <div class="big-card bc-purp">
+      <div class="big-icon">💎</div>
+      <div class="big-num" id="s-prem">0</div>
+      <div class="big-label">Premium</div>
+    </div>
+    <div class="big-card bc-orange">
+      <div class="big-icon">✨</div>
+      <div class="big-num" id="s-new">0</div>
+      <div class="big-label">Bugun yangi</div>
+    </div>
+  </div>
+
+  <!-- Aktiv users -->
+  <div class="sec-title">Aktivlik</div>
+  <div class="card">
+    <div class="row"><span class="row-key">📅 Bugun aktiv</span><span class="row-val v-green" id="a-today">0</span></div>
+    <div class="row"><span class="row-key">📅 Hafta aktiv</span><span class="row-val v-blue"  id="a-week">0</span></div>
+    <div class="row"><span class="row-key">📅 Oy aktiv</span>  <span class="row-val v-blue"  id="a-month">0</span></div>
+  </div>
+
+  <!-- New users -->
+  <div class="sec-title">Yangi foydalanuvchilar</div>
+  <div class="card">
+    <div class="row"><span class="row-key">✨ Bugun</span><span class="row-val v-green"  id="n-today">0</span></div>
+    <div class="row"><span class="row-key">✨ Hafta</span> <span class="row-val v-blue"   id="n-week">0</span></div>
+    <div class="row"><span class="row-key">✨ Oy</span>    <span class="row-val v-blue"   id="n-month">0</span></div>
+  </div>
+
+  <!-- Subscription -->
+  <div class="sec-title">Obuna holati</div>
+  <div class="card">
+    <div class="row"><span class="row-key">🆓 Bepul</span>           <span class="row-val" id="u-free">0</span></div>
+    <div class="row"><span class="row-key">💎 Premium (aktiv)</span> <span class="row-val v-purp" id="u-prem">0</span></div>
+    <div class="row"><span class="row-key">⏰ Muddati o'tgan</span>  <span class="row-val v-orange" id="u-exp">0</span></div>
+    <div class="row"><span class="row-key">📱 Ro'yxatdan o'tgan</span><span class="row-val" id="u-reg">0</span></div>
+  </div>
+
+  <!-- AI Usage -->
+  <div class="sec-title">Bugungi AI foydalanish</div>
+  <div class="card" id="ai-block"></div>
+
+  <!-- Premium users -->
+  <div class="sec-title">So'nggi premium foydalanuvchilar</div>
+  <div class="card" id="prem-list"></div>
+
+  <div class="update-time" id="upd-time"></div>
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+
+const p = new URLSearchParams(location.search);
+const g = (k, d=0) => p.get(k) || d;
+
+// Big stats
+document.getElementById('s-total').textContent = g('total');
+document.getElementById('s-today').textContent = g('a_today');
+document.getElementById('s-prem').textContent  = g('premium');
+document.getElementById('s-new').textContent   = g('n_today');
+
+// Active
+document.getElementById('a-today').textContent = g('a_today');
+document.getElementById('a-week').textContent  = g('a_week');
+document.getElementById('a-month').textContent = g('a_month');
+
+// New
+document.getElementById('n-today').textContent = g('n_today');
+document.getElementById('n-week').textContent  = g('n_week');
+document.getElementById('n-month').textContent = g('n_month');
+
+// Sub
+const reg  = parseInt(g('registered'));
+const prem = parseInt(g('premium'));
+const exp  = parseInt(g('expired'));
+document.getElementById('u-free').textContent  = reg - prem;
+document.getElementById('u-prem').textContent  = prem;
+document.getElementById('u-exp').textContent   = exp;
+document.getElementById('u-reg').textContent   = reg;
+
+// AI models
+const models = [
+  { key:'groq',   ico:'⚡', name:'Groq Llama 3.3',  mReq:14400,  mTok:500000  },
+  { key:'gemini', ico:'🔵', name:'Gemini 2.5 Flash', mReq:1500,   mTok:1000000 },
+  { key:'qwen',   ico:'🟠', name:'GPT-OSS 120B',     mReq:1000,   mTok:500000  },
+];
+const aiB = document.getElementById('ai-block');
+models.forEach(m => {
+  const req  = parseInt(g(`${m.key}_req`));
+  const tok  = parseInt(g(`${m.key}_tok`));
+  const pct  = Math.max(req/m.mReq, tok/m.mTok)*100;
+  const cls  = pct>=80?'bf-red':pct>=50?'bf-orange':'bf-blue';
+  const pcls = pct>=80?'style="color:#f85149"':pct>=50?'style="color:#d29922"':'style="color:#3fb950"';
+  aiB.innerHTML += `
+    <div class="prog">
+      <div class="prog-top">
+        <div class="prog-name">${m.ico} ${m.name}</div>
+        <div class="prog-pct" ${pcls}>${pct.toFixed(1)}%</div>
+      </div>
+      <div class="bar"><div class="bf ${cls}" style="width:${Math.min(100,pct)}%"></div></div>
+    </div>`;
+});
+
+// Premium list
+const premStr = p.get('prem_list') || '';
+const premB = document.getElementById('prem-list');
+if (premStr) {
+  const items = premStr.split('|');
+  items.forEach(item => {
+    const parts = item.split(':');
+    if (parts.length >= 2) {
+      const name = decodeURIComponent(parts[0]);
+      const exp  = parts[1];
+      premB.innerHTML += `
+        <div class="prem-item">
+          <div class="prem-av">${name[0]?.toUpperCase()||'?'}</div>
+          <div>
+            <div class="prem-name">${name}</div>
+            <div class="prem-date">${exp} gacha</div>
+          </div>
+          <div class="prem-badge">Premium</div>
+        </div>`;
+    }
+  });
+} else {
+  premB.innerHTML = '<div class="row"><span class="row-key" style="color:var(--muted)">Hali premium foydalanuvchi yo\'q</span></div>';
+}
+
+// Update time
+const now = new Date();
+document.getElementById('upd-time').textContent =
+  `Yangilangan: ${now.toLocaleTimeString('uz-UZ')}`;
+</script>
+</body>
+</html>
