@@ -19,128 +19,212 @@
       --red:   #f85149;
       --grad:  linear-gradient(135deg,#2ca5e0,#7b5cf0);
       --r:     14px;
+      --nav:   60px;
     }
-    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-      min-height: 100vh;
-      padding-bottom: 32px;
-    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+    html,body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; height:100%; }
+    body { padding-bottom:var(--nav); overflow-x:hidden; }
 
-    /* ── HEADER ── */
+    /* ── TOPBAR ── */
     .topbar {
-      background: rgba(13,17,23,.92);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 16px; height: 52px;
-      position: sticky; top:0; z-index:10;
+      background:rgba(13,17,23,.92); backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 16px; height:52px;
+      position:sticky; top:0; z-index:20;
     }
     .logo { display:flex; align-items:center; gap:8px; }
     .logo-icon { width:30px;height:30px;border-radius:9px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:16px; }
-    .logo-name { font-size:17px;font-weight:700;letter-spacing:-.4px; }
+    .logo-name { font-size:17px;font-weight:700; }
     .logo-name span { background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
-    .topbar-title { font-size:15px;font-weight:600;color:var(--muted); }
+    .topbar-r { font-size:13px;color:var(--muted); }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      position:fixed; bottom:0; left:0; right:0;
+      height:var(--nav); z-index:20;
+      background:rgba(13,17,23,.96); backdrop-filter:blur(20px);
+      border-top:1px solid rgba(255,255,255,.07);
+      display:flex;
+    }
+    .nav-btn {
+      flex:1; display:flex; flex-direction:column; align-items:center;
+      justify-content:center; gap:3px;
+      border:none; background:transparent; cursor:pointer;
+      color:var(--muted); font-size:11px; font-weight:600;
+      transition:color .18s;
+    }
+    .nav-btn.active { color:var(--a1); }
+    .nav-ico { font-size:20px; transition:transform .18s; }
+    .nav-btn.active .nav-ico { transform:scale(1.15); }
+
+    /* ── PAGES ── */
+    .page { display:none; padding:16px 14px 8px; }
+    .page.active { display:block; animation:fadeIn .2s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 
     /* ── AVATAR BLOCK ── */
-    .avatar-section {
-      padding: 24px 16px 0;
-      display: flex; flex-direction: column; align-items: center;
-      text-align: center;
-    }
+    .avatar-wrap { display:flex; flex-direction:column; align-items:center; padding:20px 0 16px; }
     .avatar {
-      width: 80px; height: 80px; border-radius: 50%;
-      background: var(--grad);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 36px;
-      box-shadow: 0 8px 28px rgba(44,165,224,.3);
-      margin-bottom: 14px;
+      width:76px; height:76px; border-radius:50%;
+      background:var(--grad);
+      display:flex; align-items:center; justify-content:center;
+      font-size:32px; font-weight:700;
+      box-shadow:0 8px 24px rgba(44,165,224,.3);
+      margin-bottom:12px;
     }
-    .user-name { font-size: 22px; font-weight: 800; letter-spacing:-.5px; margin-bottom: 6px; }
+    .uname { font-size:22px; font-weight:800; letter-spacing:-.5px; margin-bottom:6px; }
     .sub-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 5px 14px; border-radius: 20px;
-      font-size: 13px; font-weight: 700;
+      display:inline-flex; align-items:center; gap:5px;
+      padding:4px 14px; border-radius:20px;
+      font-size:13px; font-weight:700;
     }
-    .sub-admin   { background: rgba(210,153,34,.15); border:1px solid rgba(210,153,34,.3); color:#e3b341; }
-    .sub-premium { background: rgba(44,165,224,.15); border:1px solid rgba(44,165,224,.3); color:#79c0ff; }
-    .sub-free    { background: rgba(139,148,158,.12); border:1px solid rgba(139,148,158,.2); color:var(--muted); }
+    .b-admin   { background:rgba(210,153,34,.15); border:1px solid rgba(210,153,34,.3); color:#e3b341; }
+    .b-premium { background:rgba(123,92,240,.15);  border:1px solid rgba(123,92,240,.3);  color:#d2a8ff; }
+    .b-free    { background:rgba(139,148,158,.12); border:1px solid rgba(139,148,158,.2); color:var(--muted); }
 
-    /* ── INFO CARD ── */
-    .section { padding: 16px 14px 0; }
+    /* ── CARD ── */
     .card {
-      background: var(--bg2);
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: var(--r);
-      overflow: hidden;
-      margin-bottom: 10px;
+      background:var(--bg2); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--r); overflow:hidden; margin-bottom:10px;
     }
     .card-head {
-      padding: 12px 16px 10px;
-      font-size: 10px; font-weight: 700;
-      letter-spacing: .8px; text-transform: uppercase;
-      color: var(--a1);
-      border-bottom: 1px solid rgba(255,255,255,.05);
+      padding:10px 16px 9px;
+      font-size:10px; font-weight:700; letter-spacing:.8px; text-transform:uppercase;
+      color:var(--a1); border-bottom:1px solid rgba(255,255,255,.05);
     }
+    .c-green .card-head  { color:var(--green); }
+    .c-purple .card-head { color:#bc8cff; }
+    .c-orange .card-head { color:var(--orange); }
 
     .info-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 11px 16px;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-      font-size: 14px;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:10px 16px; border-bottom:1px solid rgba(255,255,255,.04);
+      font-size:14px;
     }
-    .info-row:last-child { border-bottom: none; }
-    .info-key { color: var(--muted); display:flex; align-items:center; gap:7px; }
-    .info-val { font-weight: 600; color: var(--text); }
+    .info-row:last-child { border-bottom:none; }
+    .info-key { color:var(--muted); display:flex; align-items:center; gap:7px; }
+    .info-val { font-weight:600; }
 
-    /* ── PROGRESS CARD ── */
-    .prog-item {
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-    }
-    .prog-item:last-child { border-bottom: none; }
-    .prog-top {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 8px;
-    }
-    .prog-name { font-size: 14px; font-weight: 600; display:flex; align-items:center; gap:7px; }
-    .prog-pct  { font-size: 13px; font-weight: 700; }
-    .prog-sub  { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-    .bar-wrap  { height: 6px; background: var(--bg3); border-radius: 6px; overflow: hidden; }
-    .bar-fill  {
-      height: 100%; border-radius: 6px;
-      background: var(--grad);
-      transition: width .6s ease;
-    }
-    .bar-fill.green  { background: linear-gradient(90deg, #3fb950, #56d364); }
-    .bar-fill.orange { background: linear-gradient(90deg, #d29922, #f0a030); }
-    .bar-fill.red    { background: linear-gradient(90deg, #f85149, #ff6a5e); }
+    /* ── PROGRESS ── */
+    .prog-item { padding:11px 16px; border-bottom:1px solid rgba(255,255,255,.04); }
+    .prog-item:last-child { border-bottom:none; }
+    .prog-top { display:flex; justify-content:space-between; margin-bottom:6px; }
+    .prog-name { font-size:14px; font-weight:600; display:flex; align-items:center; gap:6px; }
+    .prog-pct  { font-size:13px; font-weight:700; }
+    .prog-sub  { font-size:12px; color:var(--muted); margin-bottom:6px; }
+    .bar { height:5px; background:var(--bg3); border-radius:5px; overflow:hidden; }
+    .bar-f { height:100%; border-radius:5px; transition:width .6s ease; }
+    .bf-blue   { background:var(--grad); }
+    .bf-green  { background:linear-gradient(90deg,#3fb950,#56d364); }
+    .bf-orange { background:linear-gradient(90deg,#d29922,#f0a030); }
+    .bf-red    { background:linear-gradient(90deg,#f85149,#ff6a5e); }
+    .pc-green  { color:var(--green); }
+    .pc-orange { color:var(--orange); }
+    .pc-red    { color:var(--red); }
 
-    .dot-green  { color: var(--green); }
-    .dot-orange { color: var(--orange); }
-    .dot-red    { color: var(--red); }
-
-    /* ── TTS CARD ── */
-    .tts-item {
-      padding: 11px 16px;
-      border-bottom: 1px solid rgba(255,255,255,.04);
+    /* ── SUBSCRIPTION PAGE ── */
+    .ref-block {
+      background:var(--bg2); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--r); padding:16px; margin-bottom:10px;
+      text-align:center;
     }
-    .tts-item:last-child { border-bottom: none; }
-    .tts-label { font-size: 13px; color: var(--muted); margin-bottom: 6px; display:flex; align-items:center; gap:6px; }
-    .tts-nums  { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-    .tts-used  { font-size:14px; font-weight:700; }
-    .tts-max   { font-size:12px; color:var(--muted); }
-
-    /* ── IMAGE STAT ── */
-    .img-big {
-      padding: 16px;
-      display: flex; align-items: center; justify-content: space-between;
+    .ref-label { font-size:12px; color:var(--muted); margin-bottom:8px; }
+    .ref-code {
+      font-size:18px; font-weight:800; letter-spacing:2px;
+      background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      margin-bottom:10px;
     }
-    .img-num { font-size: 32px; font-weight: 800; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .img-label { font-size: 13px; color:var(--muted); margin-top:2px; }
-    .img-right { text-align:right; }
+    .ref-link { font-size:12px; color:var(--muted); word-break:break-all; }
+    .copy-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      margin-top:10px; padding:7px 16px; border-radius:8px;
+      background:rgba(44,165,224,.12); border:1px solid rgba(44,165,224,.25);
+      color:var(--a1); font-size:13px; font-weight:600; cursor:pointer;
+      transition:all .18s;
+    }
+    .copy-btn:active { transform:scale(.97); }
+    .copy-done { background:rgba(63,185,80,.12)!important; border-color:rgba(63,185,80,.25)!important; color:var(--green)!important; }
+
+    .plan-row {
+      display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;
+    }
+    .plan {
+      background:var(--bg2); border:1.5px solid rgba(255,255,255,.07);
+      border-radius:var(--r); padding:16px; text-align:center;
+      cursor:pointer; transition:all .18s; position:relative;
+    }
+    .plan:active { transform:scale(.97); }
+    .plan.best { border-color:rgba(123,92,240,.4); background:rgba(123,92,240,.06); }
+    .plan-best-badge {
+      position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+      background:var(--a2); color:#fff; font-size:10px; font-weight:700;
+      padding:2px 10px; border-radius:10px; white-space:nowrap;
+    }
+    .plan-name { font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:600; }
+    .plan-price {
+      font-size:22px; font-weight:800;
+      background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .plan-period { font-size:11px; color:var(--muted); margin-top:2px; }
+    .plan-save { font-size:11px; color:var(--green); font-weight:600; margin-top:4px; }
+
+    .pay-btn {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      width:100%; padding:14px; border-radius:var(--r);
+      background:var(--grad); color:#fff;
+      font-size:15px; font-weight:700;
+      border:none; cursor:pointer;
+      text-decoration:none;
+      transition:all .2s;
+      box-shadow:0 4px 20px rgba(44,165,224,.25);
+    }
+    .pay-btn:active { transform:scale(.98); }
+    .pay-note { font-size:12px; color:var(--muted); text-align:center; margin-top:8px; line-height:1.5; }
+
+    /* ── GIFT PAGE ── */
+    .gift-hero {
+      text-align:center; padding:20px 16px;
+      background:linear-gradient(135deg,rgba(44,165,224,.07),rgba(123,92,240,.07));
+      border:1px solid rgba(255,255,255,.06); border-radius:var(--r);
+      margin-bottom:10px;
+    }
+    .gift-emoji { font-size:48px; margin-bottom:10px; }
+    .gift-title { font-size:18px; font-weight:800; margin-bottom:6px; }
+    .gift-sub   { font-size:13px; color:var(--muted); line-height:1.6; }
+
+    .amount-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
+    .amount-btn {
+      padding:12px 8px; border-radius:10px;
+      background:var(--bg2); border:1.5px solid rgba(255,255,255,.07);
+      color:var(--text); font-size:14px; font-weight:700;
+      cursor:pointer; text-align:center; transition:all .18s;
+    }
+    .amount-btn.selected {
+      border-color:var(--a1); background:rgba(44,165,224,.1); color:var(--a1);
+    }
+    .amount-btn:active { transform:scale(.96); }
+    .amount-sub { font-size:10px; color:var(--muted); font-weight:400; }
+
+    .donate-btn {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      width:100%; padding:14px; border-radius:var(--r);
+      background:linear-gradient(135deg,#f59e0b,#ef4444);
+      color:#fff; font-size:15px; font-weight:700;
+      border:none; cursor:pointer; text-decoration:none;
+      transition:all .2s;
+      box-shadow:0 4px 20px rgba(239,68,68,.2);
+    }
+    .donate-btn:active { transform:scale(.98); }
+
+    .features-list { list-style:none; }
+    .features-list li {
+      display:flex; align-items:center; gap:10px;
+      padding:9px 16px; border-bottom:1px solid rgba(255,255,255,.04);
+      font-size:14px; color:var(--muted);
+    }
+    .features-list li:last-child { border-bottom:none; }
+    .features-list li::before { content:'✓'; color:var(--green); font-weight:700; flex-shrink:0; }
   </style>
 </head>
 <body>
@@ -150,171 +234,304 @@
     <div class="logo-icon">🤖</div>
     <span class="logo-name">Uz<span>Genie</span></span>
   </div>
-  <div class="topbar-title">Profil</div>
+  <div class="topbar-r" id="topbar-title">Profil</div>
 </div>
 
-<div class="avatar-section">
-  <div class="avatar" id="av">👤</div>
-  <div class="user-name" id="uname">—</div>
-  <div class="sub-badge sub-free" id="subBadge">🆓 Bepul</div>
-</div>
+<!-- PAGE 1: PROFIL -->
+<div class="page active" id="page-profile">
+  <div class="avatar-wrap">
+    <div class="avatar" id="av">S</div>
+    <div class="uname" id="uname">—</div>
+    <div class="sub-badge b-free" id="subBadge">🆓 Bepul</div>
+  </div>
 
-<div class="section">
-
-  <!-- Info -->
   <div class="card">
     <div class="card-head">Ma'lumotlar</div>
     <div class="info-row">
-      <span class="info-key">📱 Telefon</span>
-      <span class="info-val" id="phone">—</span>
+      <span class="info-key">🗓 Obuna</span>
+      <span class="info-val" id="expiry">Bepul</span>
     </div>
     <div class="info-row">
-      <span class="info-key">🗓 Obuna tugashi</span>
-      <span class="info-val" id="expiry">—</span>
+      <span class="info-key">🎨 Rasm (bugun)</span>
+      <span class="info-val" id="img-stat">0/5</span>
     </div>
   </div>
 
-  <!-- AI Usage -->
   <div class="card">
     <div class="card-head">Bugungi AI foydalanish</div>
     <div id="ai-progs"></div>
   </div>
 
-  <!-- Image -->
-  <div class="card">
-    <div class="card-head">Rasm yaratish</div>
-    <div class="img-big">
-      <div>
-        <div class="img-num" id="img-used">0</div>
-        <div class="img-label">Bugun ishlatildi</div>
-      </div>
-      <div class="img-right">
-        <div class="img-num" id="img-max">5</div>
-        <div class="img-label">Kunlik limit</div>
-      </div>
-    </div>
-    <div style="padding:0 16px 14px">
-      <div class="bar-wrap">
-        <div class="bar-fill" id="img-bar" style="width:0%"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TTS -->
   <div class="card">
     <div class="card-head">Ovoz (oylik)</div>
     <div id="tts-block"></div>
   </div>
+</div>
 
+<!-- PAGE 2: OBUNA -->
+<div class="page" id="page-sub">
+  <div style="height:8px"></div>
+
+  <!-- Referal -->
+  <div class="ref-block">
+    <div class="ref-label">Referal kodingiz</div>
+    <div class="ref-code" id="refCode">UZG_———</div>
+    <div class="ref-link" id="refLink">t.me/UzGenie_bot?start=ref_...</div>
+    <button class="copy-btn" id="copyBtn" onclick="copyRef()">📋 Linkni nusxalash</button>
+  </div>
+
+  <!-- Planlar -->
+  <div class="card c-purple">
+    <div class="card-head">Premium xususiyatlar</div>
+    <ul class="features-list">
+      <li>Cheksiz rasm yaratish (kuniga 5 emas)</li>
+      <li>Ustuvor javob tezligi</li>
+      <li>Yangi xususiyatlar avval ochiladi</li>
+      <li>Premium qo'llab-quvvatlash</li>
+    </ul>
+  </div>
+
+  <div class="plan-row">
+    <div class="plan" id="plan-month" onclick="selectPlan('month')">
+      <div class="plan-name">Oylik</div>
+      <div class="plan-price">29 900</div>
+      <div class="plan-period">so'm / oy</div>
+    </div>
+    <div class="plan best" id="plan-year" onclick="selectPlan('year')">
+      <div class="plan-best-badge">🔥 Tejamli</div>
+      <div class="plan-name">Yillik</div>
+      <div class="plan-price">249 900</div>
+      <div class="plan-period">so'm / yil</div>
+      <div class="plan-save">2 oy bepul!</div>
+    </div>
+  </div>
+
+  <a class="pay-btn" id="payBtn" href="#" onclick="openPayment(event)">
+    💳 To'lovga o'tish
+  </a>
+  <div class="pay-note">
+    To'lov Idonati orqali amalga oshiriladi.<br>
+    Savollar uchun: <b>@S03233</b>
+  </div>
+</div>
+
+<!-- PAGE 3: SOVG'ALAR -->
+<div class="page" id="page-gift">
+  <div style="height:8px"></div>
+
+  <div class="gift-hero">
+    <div class="gift-emoji">🎁</div>
+    <div class="gift-title">Bot rivojiga hissa qo'shing</div>
+    <div class="gift-sub">
+      UzGenie bepul ishlaydi. Agar bot sizga foydali bo'lsa —<br>
+      chin ko'ngildan donat qilishingiz mumkin.<br>
+      <b>Majburiy emas, ixtiyoriy!</b>
+    </div>
+  </div>
+
+  <div class="card c-orange">
+    <div class="card-head">Miqdor tanlang</div>
+    <div style="padding:14px 16px">
+      <div class="amount-grid" id="amounts">
+        <div class="amount-btn" onclick="selectAmount(5000)">5 000<div class="amount-sub">so'm</div></div>
+        <div class="amount-btn selected" onclick="selectAmount(10000)">10 000<div class="amount-sub">so'm</div></div>
+        <div class="amount-btn" onclick="selectAmount(20000)">20 000<div class="amount-sub">so'm</div></div>
+        <div class="amount-btn" onclick="selectAmount(50000)">50 000<div class="amount-sub">so'm</div></div>
+        <div class="amount-btn" onclick="selectAmount(100000)">100 000<div class="amount-sub">so'm</div></div>
+        <div class="amount-btn" onclick="selectAmount(0)">🤍 Boshqa<div class="amount-sub">miqdor</div></div>
+      </div>
+    </div>
+  </div>
+
+  <a class="donate-btn" id="donateBtn" href="#" onclick="openDonate(event)">
+    ❤️ Donat qilish
+  </a>
+
+  <div class="pay-note" style="margin-top:10px">
+    Har qanday miqdor bot rivojiga yordam beradi.<br>
+    Rahmat! 🙏
+  </div>
+
+  <div style="height:16px"></div>
+
+  <div class="card">
+    <div class="card-head">Nima uchun donat?</div>
+    <ul class="features-list">
+      <li>Server xarajatlari (API, hosting)</li>
+      <li>Yangi AI modellar ulash</li>
+      <li>Tezroq rivojlanish</li>
+      <li>Yangi xususiyatlar qo'shish</li>
+    </ul>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-profile" onclick="goPage('profile')">
+    <span class="nav-ico">👤</span>Profil
+  </button>
+  <button class="nav-btn" id="nav-sub" onclick="goPage('sub')">
+    <span class="nav-ico">💎</span>Obuna
+  </button>
+  <button class="nav-btn" id="nav-gift" onclick="goPage('gift')">
+    <span class="nav-ico">🎁</span>Sovg'alar
+  </button>
 </div>
 
 <script>
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
 
-const p = new URLSearchParams(location.search);
-const g = (k, def='') => p.get(k) || def;
+/* ── O'zgartirishingiz mumkin bo'lgan sozlamalar ── */
+// Idonati accountingizni ochib, shu linkni qo'ying:
+const IDONATI_PAGE  = "https://idonati.uz";          // TODO: o'z sahifangiz linki
+const IDONATI_DONAT = "https://idonati.uz";          // TODO: donat linki
 
-/* ── User info ── */
-const name  = g('name', 'Foydalanuvchi');
-const sub   = g('sub',  'free');
-const phone = g('phone', '—');
-const expiry= g('expiry','—');
+/* ── URL parametrlar ── */
+const p  = new URLSearchParams(location.search);
+const g  = (k, d='') => p.get(k) || d;
 
+const name   = g('name', 'Foydalanuvchi');
+const sub    = g('sub',  'free');
+const expiry = g('expiry','');
+const uid    = g('uid',  '');
+const imgUsed= parseInt(g('img_used', 0));
+
+/* ── Avatar & name ── */
+document.getElementById('av').textContent = name[0]?.toUpperCase() || '🤖';
 document.getElementById('uname').textContent = name;
-document.getElementById('av').textContent = name[0]?.toUpperCase() || '👤';
-document.getElementById('phone').textContent = phone;
-document.getElementById('expiry').textContent =
-  expiry === '—' ? (sub === 'free' ? '♾️ Doimiy bepul' : '—') : expiry + ' gacha';
 
 const badge = document.getElementById('subBadge');
-if (sub === 'admin') {
-  badge.className = 'sub-badge sub-admin';
-  badge.textContent = '👑 Admin';
-} else if (sub === 'premium') {
-  badge.className = 'sub-badge sub-premium';
-  badge.textContent = '💎 Premium';
-} else {
-  badge.className = 'sub-badge sub-free';
-  badge.textContent = '🆓 Bepul';
-}
+if (sub === 'admin')   { badge.className='sub-badge b-admin';   badge.textContent='👑 Admin'; }
+else if (sub==='premium'){ badge.className='sub-badge b-premium'; badge.textContent='💎 Premium'; }
+else                   { badge.className='sub-badge b-free';   badge.textContent='🆓 Bepul'; }
+
+/* ── Obuna tugash ── */
+const expiryEl = document.getElementById('expiry');
+if (sub==='admin')   expiryEl.textContent = '♾️ Admin';
+else if (expiry)     expiryEl.textContent = expiry + ' gacha';
+else                 expiryEl.textContent = '♾️ Bepul tarif';
+
+/* ── Rasm ── */
+const imgMax = (sub==='free') ? 5 : 9999;
+document.getElementById('img-stat').textContent =
+  sub==='free' ? `${imgUsed}/5 (bugun)` : `${imgUsed} / ♾️`;
 
 /* ── AI models ── */
 const models = [
-  { key:'groq',   icon:'⚡', name:'Groq Llama 3.3',  maxReq:14400,   maxTok:500000 },
-  { key:'gemini', icon:'🔵', name:'Gemini 2.5 Flash', maxReq:1500,    maxTok:1000000 },
-  { key:'qwen',   icon:'🟠', name:'GPT-OSS 120B',     maxReq:1000,    maxTok:500000 },
+  { key:'groq',   ico:'⚡', name:'Groq Llama 3.3',  mReq:14400,  mTok:500000  },
+  { key:'gemini', ico:'🔵', name:'Gemini 2.5 Flash', mReq:1500,   mTok:1000000 },
+  { key:'qwen',   ico:'🟠', name:'GPT-OSS 120B',     mReq:1000,   mTok:500000  },
 ];
-
 const aiBlock = document.getElementById('ai-progs');
 models.forEach(m => {
-  const req    = parseInt(g(`${m.key}_req`, 0));
-  const tok    = parseInt(g(`${m.key}_tok`, 0));
-  const pctReq = Math.min(100, req / m.maxReq * 100);
-  const pctTok = Math.min(100, tok / m.maxTok * 100);
-  const pct    = Math.max(pctReq, pctTok);
-  const pctStr = pct.toFixed(1) + '%';
-  const color  = pct >= 80 ? 'red' : pct >= 50 ? 'orange' : 'green';
-  const dotCls = pct >= 80 ? 'dot-red' : pct >= 50 ? 'dot-orange' : 'dot-green';
-
-  aiBlock.innerHTML += `
+  const req  = parseInt(g(`${m.key}_req`, 0));
+  const tok  = parseInt(g(`${m.key}_tok`, 0));
+  const pct  = Math.max(req/m.mReq, tok/m.mTok)*100;
+  const pp   = pct.toFixed(1)+'%';
+  const cls  = pct>=80?'bf-red':pct>=50?'bf-orange':'bf-blue';
+  const pcls = pct>=80?'pc-red':pct>=50?'pc-orange':'pc-green';
+  aiBlock.innerHTML+=`
     <div class="prog-item">
       <div class="prog-top">
-        <div class="prog-name"><span>${m.icon}</span>${m.name}</div>
-        <div class="prog-pct ${dotCls}">${pctStr}</div>
+        <div class="prog-name">${m.ico} ${m.name}</div>
+        <div class="prog-pct ${pcls}">${pp}</div>
       </div>
-      <div class="prog-sub">
-        So'rov: ${req.toLocaleString()}/${m.maxReq.toLocaleString()} &nbsp;·&nbsp;
-        Token: ${tok.toLocaleString()}/${m.maxTok.toLocaleString()}
-      </div>
-      <div class="bar-wrap"><div class="bar-fill ${color}" style="width:${pct}%"></div></div>
+      <div class="prog-sub">So'rov: ${req.toLocaleString()}/${m.mReq.toLocaleString()} · Token: ${tok.toLocaleString()}/${m.mTok.toLocaleString()}</div>
+      <div class="bar"><div class="bar-f ${cls}" style="width:${Math.min(100,pct)}%"></div></div>
     </div>`;
 });
 
-/* ── Image ── */
-const imgUsed = parseInt(g('img_used', 0));
-const imgMax  = sub === 'free' ? 5 : 9999;
-const imgPct  = sub === 'free' ? Math.min(100, imgUsed / 5 * 100) : 0;
-document.getElementById('img-used').textContent = imgUsed;
-document.getElementById('img-max').textContent  = sub === 'free' ? '5' : '♾️';
-document.getElementById('img-bar').style.width  = imgPct + '%';
-const imgBarColor = imgPct >= 80 ? 'red' : imgPct >= 50 ? 'orange' : 'green';
-document.getElementById('img-bar').classList.add(imgBarColor);
-
 /* ── TTS ── */
-const ELEVEN_LIMIT = 10000;
-const e1    = parseInt(g('e1', 0));
-const e2    = parseInt(g('e2', 0));
-const edge  = parseInt(g('edge', 0));
-const e1pct = Math.min(100, e1 / ELEVEN_LIMIT * 100);
-const e2pct = Math.min(100, e2 / ELEVEN_LIMIT * 100);
+const ELIM = 10000;
+const e1   = parseInt(g('e1',0));
+const e2   = parseInt(g('e2',0));
+const edge = parseInt(g('edge',0));
+function ttsRow(used, max, label) {
+  const pct  = Math.min(100, used/max*100);
+  const cls  = pct>=80?'bf-red':pct>=50?'bf-orange':'bf-green';
+  const pcls = pct>=80?'pc-red':pct>=50?'pc-orange':'pc-green';
+  return `<div class="prog-item">
+    <div class="prog-top">
+      <div class="prog-name" style="font-size:13px">${label}</div>
+      <div class="prog-pct ${pcls} " style="font-size:12px">${used.toLocaleString()} / ${max.toLocaleString()}</div>
+    </div>
+    <div class="bar"><div class="bar-f ${cls}" style="width:${pct}%"></div></div>
+  </div>`;
+}
+document.getElementById('tts-block').innerHTML =
+  ttsRow(e1, ELIM, '🎙 ElevenLabs — Kalit 1') +
+  ttsRow(e2, ELIM, '🎙 ElevenLabs — Kalit 2') +
+  `<div class="prog-item">
+    <div class="prog-top">
+      <div class="prog-name" style="font-size:13px">🔊 Edge TTS</div>
+      <div class="prog-pct pc-green" style="font-size:12px">♾️ Cheksiz · ${edge.toLocaleString()} belgi</div>
+    </div>
+  </div>`;
 
-function ttsBar(used, max, label) {
-  const pct   = Math.min(100, used / max * 100);
-  const color = pct >= 80 ? 'red' : pct >= 50 ? 'orange' : 'green';
-  const left  = Math.max(0, max - used);
-  return `
-    <div class="tts-item">
-      <div class="tts-label">🎙 ${label}</div>
-      <div class="tts-nums">
-        <span class="tts-used">${used.toLocaleString()} belgi</span>
-        <span class="tts-max">qoldi: ${left.toLocaleString()}</span>
-      </div>
-      <div class="bar-wrap"><div class="bar-fill ${color}" style="width:${pct}%"></div></div>
-    </div>`;
+/* ── Referal ── */
+if (uid) {
+  document.getElementById('refCode').textContent = 'UZG_' + uid;
+  const link = 't.me/UzGenie_bot?start=ref_' + uid;
+  document.getElementById('refLink').textContent = link;
+  document.getElementById('refLink').dataset.full = 'https://' + link;
 }
 
-document.getElementById('tts-block').innerHTML =
-  ttsBar(e1, ELEVEN_LIMIT, 'ElevenLabs — Kalit 1') +
-  ttsBar(e2, ELEVEN_LIMIT, 'ElevenLabs — Kalit 2') +
-  `<div class="tts-item">
-     <div class="tts-label">🔊 Edge TTS &nbsp;<span style="color:var(--green);font-weight:700;">♾️ Cheksiz</span></div>
-     <div class="tts-nums">
-       <span class="tts-used">${edge.toLocaleString()} belgi</span>
-       <span class="tts-max">limit yo'q</span>
-     </div>
-     <div class="bar-wrap"><div class="bar-fill green" style="width:${Math.min(100,edge/100000*100)}%"></div></div>
-   </div>`;
+function copyRef() {
+  const link = document.getElementById('refLink').dataset.full || 'https://t.me/UzGenie_bot';
+  navigator.clipboard.writeText(link).catch(()=>{});
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = '✅ Nusxalandi!';
+  btn.classList.add('copy-done');
+  setTimeout(()=>{ btn.textContent='📋 Linkni nusxalash'; btn.classList.remove('copy-done'); }, 2000);
+}
+
+/* ── Plan tanlash ── */
+let selectedPlan = 'year';
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.getElementById('plan-month').classList.toggle('best', plan==='month');
+  document.getElementById('plan-year').classList.toggle('best',  plan==='year');
+}
+
+function openPayment(e) {
+  e.preventDefault();
+  if (IDONATI_PAGE === 'https://idonati.uz') {
+    if (tg) tg.showAlert('To\'lov tizimi tez orada ulangach ishga tushadi. Hozircha admin bilan bog\'laning: @S03233');
+    return;
+  }
+  window.open(IDONATI_PAGE + '?plan=' + selectedPlan, '_blank');
+}
+
+/* ── Donat ── */
+let selectedAmount = 10000;
+function selectAmount(amount) {
+  selectedAmount = amount;
+  document.querySelectorAll('.amount-btn').forEach(b=>b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+}
+
+function openDonate(e) {
+  e.preventDefault();
+  if (IDONATI_DONAT === 'https://idonati.uz') {
+    if (tg) tg.showAlert('Donat tizimi tez orada ulangach ishga tushadi. Rahmat sizning yaxshi niyatingiz uchun! 🙏');
+    return;
+  }
+  const url = IDONATI_DONAT + (selectedAmount ? '?amount=' + selectedAmount : '');
+  window.open(url, '_blank');
+}
+
+/* ── Navigation ── */
+const PAGES = ['profile','sub','gift'];
+const TITLES= {profile:'Profil', sub:'Obuna', gift:'Sovg\'alar'};
+function goPage(id) {
+  PAGES.forEach(pg=>{
+    document.getElementById('page-'+pg).classList.toggle('active', pg===id);
+    document.getElementById('nav-'+pg).classList.toggle('active', pg===id);
+  });
+  document.getElementById('topbar-title').textContent = TITLES[id]||'';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 </script>
 </body>
 </html>
