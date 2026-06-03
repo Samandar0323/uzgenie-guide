@@ -443,30 +443,32 @@ models.forEach(m => {
 });
 
 /* ── TTS ── */
-const ELIM = 10000;
-const e1   = parseInt(g('e1',0));
-const e2   = parseInt(g('e2',0));
-const edge = parseInt(g('edge',0));
-function ttsRow(used, max, label) {
-  const pct  = Math.min(100, used/max*100);
-  const cls  = pct>=80?'bf-red':pct>=50?'bf-orange':'bf-green';
-  const pcls = pct>=80?'pc-red':pct>=50?'pc-orange':'pc-green';
-  return `<div class="prog-item">
+const ELIM  = 10000;
+const e1    = parseInt(g('e1',0));
+const e2    = parseInt(g('e2',0));
+const edge  = parseInt(g('edge',0));
+const eTot  = e1 + e2;
+const eMax  = ELIM * 2;
+const ePct  = Math.min(100, eTot/eMax*100);
+const eCls  = ePct>=80?'bf-red':ePct>=50?'bf-orange':'bf-green';
+const ePcls = ePct>=80?'pc-red':ePct>=50?'pc-orange':'pc-green';
+const eLeft = Math.max(0, eMax - eTot);
+
+document.getElementById('tts-block').innerHTML = `
+  <div class="prog-item">
     <div class="prog-top">
-      <div class="prog-name" style="font-size:13px">${label}</div>
-      <div class="prog-pct ${pcls} " style="font-size:12px">${used.toLocaleString()} / ${max.toLocaleString()}</div>
+      <div class="prog-name">🎙 ElevenLabs</div>
+      <div class="prog-pct ${ePcls}">${eTot.toLocaleString()} / ${eMax.toLocaleString()}</div>
     </div>
-    <div class="bar"><div class="bar-f ${cls}" style="width:${pct}%"></div></div>
-  </div>`;
-}
-document.getElementById('tts-block').innerHTML =
-  ttsRow(e1, ELIM, '🎙 ElevenLabs — Kalit 1') +
-  ttsRow(e2, ELIM, '🎙 ElevenLabs — Kalit 2') +
-  `<div class="prog-item">
+    <div class="prog-sub">Oylik limit · Qoldi: ${eLeft.toLocaleString()} belgi</div>
+    <div class="bar"><div class="bar-f ${eCls}" style="width:${ePct}%"></div></div>
+  </div>
+  <div class="prog-item">
     <div class="prog-top">
-      <div class="prog-name" style="font-size:13px">🔊 Edge TTS</div>
-      <div class="prog-pct pc-green" style="font-size:12px">♾️ Cheksiz · ${edge.toLocaleString()} belgi</div>
+      <div class="prog-name">🔊 Edge TTS</div>
+      <div class="prog-pct pc-green">♾️ Cheksiz</div>
     </div>
+    <div class="prog-sub">Jami ishlatildi: ${edge.toLocaleString()} belgi</div>
   </div>`;
 
 /* ── Referal ── */
